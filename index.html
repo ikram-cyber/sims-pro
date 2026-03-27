@@ -10,7 +10,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     
     <style>
-        :root { --primary: #1e3a8a; --accent: #3b82f6; --success: #10b981; --danger: #ef4444; --warn: #f59e0b; --bg: #f1f5f9; --text: #334155; }
+        :root { --primary: #1e3a8a; --accent: #3b82f6; --success: #10b981; --danger: #ef4444; --warn: #f59e0b; --purple: #8b5cf6; --bg: #f1f5f9; --text: #334155; }
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background: var(--bg); color: var(--text); margin: 0; padding: 10px; padding-bottom: 75px; font-size: 13px; }
         
@@ -18,21 +18,23 @@
         .card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 12px; border: 1px solid #e2e8f0; }
         h3 { margin: 0 0 12px 0; color: var(--primary); border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; font-size: 14px; text-transform: uppercase; font-weight: 700; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
         
         /* INPUTS & BUTTONS */
         input, select, button { width: 100%; padding: 10px; margin: 4px 0 10px 0; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 13px; outline: none; }
         input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(59,130,246,0.2); }
-        label { font-size: 11px; font-weight: 700; color: #475569; display: block; margin-bottom: -2px; }
+        label { font-size: 11px; font-weight: 700; color: #475569; display: block; margin-bottom: -2px; text-transform: uppercase; }
         
         .btn-main { background: var(--accent); color: white; border: none; font-weight: bold; cursor: pointer; }
         .btn-success { background: var(--success); color: white; border: none; font-weight: bold; cursor: pointer; }
         .btn-danger { background: var(--danger); color: white; border: none; cursor: pointer; font-weight:bold; }
         .btn-warn { background: var(--warn); color: white; border: none; cursor: pointer; font-weight:bold; }
+        .btn-purple { background: var(--purple); color: white; border: none; cursor: pointer; font-weight:bold; }
         .btn-sm { padding: 4px 8px; font-size: 11px; margin: 2px; width: auto; border-radius: 4px; display: inline-block; }
         
         /* TABS SUB-MENU */
-        .tab-container { display: flex; background: #e2e8f0; border-radius: 6px; padding: 3px; margin-bottom: 12px; }
-        .tab-btn { flex: 1; padding: 8px; text-align: center; font-size: 12px; font-weight: bold; color: #64748b; cursor: pointer; border-radius: 4px; margin: 0; border: none; background: none; }
+        .tab-container { display: flex; background: #e2e8f0; border-radius: 6px; padding: 3px; margin-bottom: 12px; overflow-x: auto;}
+        .tab-btn { flex: 1; padding: 8px; text-align: center; font-size: 12px; font-weight: bold; color: #64748b; cursor: pointer; border-radius: 4px; margin: 0; border: none; background: none; white-space: nowrap; }
         .tab-btn.active { background: white; color: var(--primary); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         .sub-page { display: none; animation: fadeIn 0.2s; }
         .sub-page.active { display: block; }
@@ -54,7 +56,7 @@
         
         .scrollable { max-height: 400px; overflow-y: auto; }
 
-        /* PRINT LAYOUT KUITANSI & RAPORT */
+        /* PRINT LAYOUT KUITANSI, RAPORT & SLIP GAJI */
         .print-area { display: none; }
         @media print { 
             body { background: white; padding: 0; margin: 0; }
@@ -73,7 +75,6 @@
             .tbl-no-border { width: 100%; margin-bottom: 20px; }
             .tbl-no-border td { border: none; padding: 4px; vertical-align: top; }
             
-            /* FORMAT TANDA TANGAN PROFESIONAL */
             .ttd-container { display: flex; justify-content: space-between; margin-top: 40px; text-align: center; }
             .ttd-box { width: 30%; }
             .ttd-name { font-weight: bold; text-decoration: underline; margin-bottom: 0; margin-top: 60px; }
@@ -90,18 +91,32 @@
         <button id="btn-install" class="btn-success btn-sm" style="display:none; margin-top:10px;">📱 Install App</button>
     </div>
     <div class="grid">
-        <div class="card" style="text-align:center; border-left: 4px solid var(--accent);">
+        <div class="card" style="text-align:center; border-left: 4px solid var(--accent); padding:10px;">
             <div style="font-size:11px; color:#64748b; font-weight:bold;">TOTAL SISWA</div>
-            <h1 id="t-siswa" style="margin:5px 0 0 0; color:var(--accent); font-size:28px;">0</h1>
+            <h1 id="t-siswa" style="margin:5px 0 0 0; color:var(--accent); font-size:24px;">0</h1>
         </div>
-        <div class="card" style="text-align:center; border-left: 4px solid var(--success);">
+        <div class="card" style="text-align:center; border-left: 4px solid var(--purple); padding:10px;">
             <div style="font-size:11px; color:#64748b; font-weight:bold;">TOTAL GURU</div>
-            <h1 id="t-guru" style="margin:5px 0 0 0; color:var(--success); font-size:28px;">0</h1>
+            <h1 id="t-guru" style="margin:5px 0 0 0; color:var(--purple); font-size:24px;">0</h1>
         </div>
     </div>
-    <div class="card" style="text-align:center; border-top: 4px solid var(--warn);">
-        <div style="font-size:11px; color:#64748b; font-weight:bold;">PENDAPATAN SPP BULAN INI</div>
-        <h1 id="t-spp" style="margin:5px 0 0 0; color:var(--warn); font-size:24px;">Rp 0</h1>
+    
+    <h3 style="font-size:12px; color:#64748b; border:none; margin-bottom:5px;">📊 KEUANGAN BULAN INI</h3>
+    <div class="card" style="border-top: 3px solid var(--success); margin-bottom:8px; padding:10px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="font-size:11px; font-weight:bold; color:#64748b;">(+) PENDAPATAN SPP</div>
+            <div id="t-spp" style="font-size:16px; font-weight:bold; color:var(--success);">Rp 0</div>
+        </div>
+    </div>
+    <div class="card" style="border-top: 3px solid var(--danger); margin-bottom:8px; padding:10px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="font-size:11px; font-weight:bold; color:#64748b;">(-) PENGELUARAN GAJI GURU</div>
+            <div id="t-gaji" style="font-size:16px; font-weight:bold; color:var(--danger);">Rp 0</div>
+        </div>
+    </div>
+    <div class="card" style="background:#f0fdf4; border:1px solid #bbf7d0; padding:15px; text-align:center;">
+        <div style="font-size:11px; font-weight:bold; color:#166534;">SALDO KAS BERSIH</div>
+        <h1 id="t-saldo" style="margin:5px 0 0 0; color:#15803d; font-size:24px;">Rp 0</h1>
     </div>
 </div>
 
@@ -135,10 +150,13 @@
         <div id="sub-guru" class="sub-page">
             <div style="background:#f8fafc; padding:10px; border-radius:6px; border:1px solid #e2e8f0; margin-bottom:10px;">
                 <div class="grid">
-                    <div><label>NIP/ID</label><input type="text" id="g-nip" placeholder="ID Guru"></div>
-                    <div><label>NAMA GURU</label><input type="text" id="g-nama" placeholder="Nama & Gelar"></div>
+                    <div><label>NIP/ID GURU</label><input type="text" id="g-nip" placeholder="ID Guru"></div>
+                    <div><label>NAMA LENGKAP & GELAR</label><input type="text" id="g-nama" placeholder="Nama & Gelar"></div>
                 </div>
-                <label>MATA PELAJARAN / JABATAN</label><input type="text" id="g-mapel" placeholder="Cth: Matematika / Wali Kelas">
+                <div class="grid">
+                    <div><label>MAPEL / JABATAN</label><input type="text" id="g-mapel" placeholder="Cth: Matematika"></div>
+                    <div><label>GAJI POKOK (Rp)</label><input type="number" id="g-gaji-pokok" value="0" placeholder="Gaji Bulanan"></div>
+                </div>
                 <div class="grid">
                     <button class="btn-main" onclick="saveGuru()">💾 SIMPAN</button>
                     <button class="btn-danger" onclick="resGuru()">❌ RESET</button>
@@ -175,23 +193,28 @@
 
         <div id="sub-nilai" class="sub-page">
             <div style="background:#eff6ff; padding:10px; border-radius:6px; border:1px solid #bfdbfe; margin-bottom:10px;">
-                <label>PILIH SISWA</label><select id="n-siswa"></select>
+                <label>PILIH SISWA UNTUK INPUT NILAI</label><select id="n-siswa"></select>
                 <div class="grid">
                     <div><label>MATA PELAJARAN</label><input type="text" id="n-mapel" placeholder="Cth: B. Indonesia"></div>
                     <div><label>SEMESTER</label><select id="n-smt"><option value="Ganjil">Ganjil</option><option value="Genap">Genap</option></select></div>
                 </div>
                 <div class="grid" style="grid-template-columns: 1fr 1fr 1fr;">
-                    <div><label>N. TUGAS</label><input type="number" id="n-tugas" value="0"></div>
-                    <div><label>N. UTS</label><input type="number" id="n-uts" value="0"></div>
-                    <div><label>N. UAS</label><input type="number" id="n-uas" value="0"></div>
+                    <div><label>NILAI TUGAS</label><input type="number" id="n-tugas" value="0"></div>
+                    <div><label>NILAI UTS</label><input type="number" id="n-uts" value="0"></div>
+                    <div><label>NILAI UAS</label><input type="number" id="n-uas" value="0"></div>
                 </div>
                 <button class="btn-main" onclick="saveNilai()">💾 SIMPAN NILAI</button>
             </div>
-            <label>PILIH SISWA UNTUK CETAK RAPORT</label>
-            <div class="grid">
-                <select id="r-siswa"></select>
-                <button class="btn-success" onclick="cetakRaport()">🖨️ CETAK RAPORT</button>
+            
+            <div style="background:#fdf4ff; padding:10px; border-radius:6px; border:1px solid #f5d0fe; margin-bottom:10px;">
+                <p style="font-size:12px; font-weight:bold; margin:0 0 10px 0; color:var(--purple);">🖨️ CETAK RAPORT RESMI</p>
+                <div class="grid">
+                    <div><label>PILIH SISWA</label><select id="r-siswa"></select></div>
+                    <div><label>PILIH WALI KELAS</label><select id="r-walikelas"></select></div>
+                </div>
+                <button class="btn-purple" onclick="cetakRaport()">🖨️ CETAK DOKUMEN RAPORT</button>
             </div>
+            
             <div class="scrollable" id="list-nilai" style="margin-top:10px;"></div>
         </div>
     </div>
@@ -199,10 +222,11 @@
 
 <div id="p-keuangan" class="page no-print">
     <div class="card">
-        <h3>💰 KEUANGAN & SPP</h3>
+        <h3>💰 KEUANGAN SEKOLAH</h3>
         <div class="tab-container">
-            <button class="tab-btn active" onclick="bukaSub('keuangan', 'bayarspp', this)">Bayar SPP</button>
-            <button class="tab-btn" onclick="bukaSub('keuangan', 'rekapspp', this)">Rekap Tunggakan</button>
+            <button class="tab-btn active" onclick="bukaSub('keuangan', 'bayarspp', this)">Terima SPP</button>
+            <button class="tab-btn" onclick="bukaSub('keuangan', 'rekapspp', this)">Rekap SPP</button>
+            <button class="tab-btn" onclick="bukaSub('keuangan', 'gajiguru', this)">Gaji Guru</button>
         </div>
 
         <div id="sub-bayarspp" class="sub-page active">
@@ -211,9 +235,9 @@
                 <div><label>PILIH SISWA</label><select id="p-siswa" onchange="cekSppSiswa()"></select></div>
             </div>
             <label>NOMINAL BAYAR (Rp)</label><input type="number" id="p-nominal" value="0">
-            <button class="btn-success" onclick="bayarSPP()">✅ PROSES PEMBAYARAN</button>
+            <button class="btn-success" onclick="bayarSPP()">✅ PROSES PEMBAYARAN SPP</button>
             <hr style="margin:15px 0; border:1px solid #e2e8f0;">
-            <p style="font-size:11px; font-weight:bold; margin-bottom:5px;">HISTORI PEMBAYARAN</p>
+            <p style="font-size:11px; font-weight:bold; margin-bottom:5px;">HISTORI PEMBAYARAN SPP</p>
             <div class="scrollable" id="list-spp"></div>
         </div>
 
@@ -224,6 +248,21 @@
                 Tabel di bawah menampilkan status pembayaran seluruh siswa untuk bulan yang dipilih.
             </div>
             <div class="scrollable" id="tabel-rekap-spp"></div>
+        </div>
+        
+        <div id="sub-gajiguru" class="sub-page">
+            <div style="background:#fee2e2; padding:10px; border-radius:6px; border:1px solid #fca5a5; margin-bottom:10px;">
+                <div class="grid">
+                    <div><label>BULAN GAJI</label><input type="month" id="gaji-bln"></div>
+                    <div><label>PILIH GURU</label><select id="gaji-guru" onchange="cekGajiGuru()"></select></div>
+                </div>
+                <label>NOMINAL GAJI POKOK (Rp)</label>
+                <input type="number" id="gaji-nominal" value="0">
+                <button class="btn-danger" onclick="bayarGaji()">💸 PROSES BAYAR GAJI</button>
+            </div>
+            <hr style="margin:15px 0; border:1px solid #e2e8f0;">
+            <p style="font-size:11px; font-weight:bold; margin-bottom:5px;">HISTORI PENGGAJIAN</p>
+            <div class="scrollable" id="list-gaji"></div>
         </div>
     </div>
 </div>
@@ -243,7 +282,7 @@
             <div><label>NIP KEPALA SEKOLAH</label><input type="text" id="set-nip" placeholder="Nomor Induk Pegawai"></div>
         </div>
         <label>NAMA BENDAHARA / TATA USAHA</label>
-        <input type="text" id="set-bendahara" placeholder="Nama Bendahara SPP">
+        <input type="text" id="set-bendahara" placeholder="Nama Bendahara SPP/Gaji">
         
         <button class="btn-main" onclick="saveSet()">🔄 SIMPAN PENGATURAN</button>
     </div>
@@ -268,7 +307,7 @@
 <nav class="bottom-nav no-print">
     <div class="nav-item active" onclick="buka('home', this)"><div class="nav-icon">📊</div>HOME</div>
     <div class="nav-item" onclick="buka('master', this)"><div class="nav-icon">👥</div>DATA</div>
-    <div class="nav-item" onclick="buka('akademik', this)"><div class="nav-icon">🎓</div>AKADEMIK</div>
+    <div class="nav-item" onclick="buka('akademik', this)"><div class="nav-icon">🎓</div>AKAD</div>
     <div class="nav-item" onclick="buka('keuangan', this)"><div class="nav-icon">💰</div>KEUANGAN</div>
     <div class="nav-item" onclick="buka('set', this)"><div class="nav-icon">⚙️</div>SETING</div>
 </nav>
@@ -288,6 +327,7 @@
     let db_guru = JSON.parse(localStorage.getItem('sch_guru')) || [];
     let db_absen = JSON.parse(localStorage.getItem('sch_absen')) || [];
     let db_spp = JSON.parse(localStorage.getItem('sch_spp')) || [];
+    let db_gaji = JSON.parse(localStorage.getItem('sch_gaji')) || []; // DB Baru Gaji
     let db_nilai = JSON.parse(localStorage.getItem('sch_nilai')) || [];
     
     // --- PENGATURAN IDENTITAS ---
@@ -312,6 +352,7 @@
     document.getElementById('a-tgl').setAttribute('max', hariIni);
     document.getElementById('p-bln').value = bulanIni;
     document.getElementById('r-bln').value = bulanIni;
+    document.getElementById('gaji-bln').value = bulanIni;
 
     // --- FUNGSI UI TABS ---
     function buka(id, elm) { 
@@ -343,22 +384,23 @@
         window.scrollTo(0,0);
     }
     function resSiswa() { document.getElementById('s-nis').value = ""; document.getElementById('s-nis').readOnly = false; document.getElementById('s-nama').value = ""; document.getElementById('s-kelas').value = ""; document.getElementById('s-spp').value = 0; }
-    function delSiswa(id) { if(confirm("Hapus?")) { db_siswa = db_siswa.filter(x => x.id !== id); localStorage.setItem('sch_siswa', JSON.stringify(db_siswa)); render(); } }
+    function delSiswa(id) { if(confirm("Hapus Siswa?")) { db_siswa = db_siswa.filter(x => x.id !== id); localStorage.setItem('sch_siswa', JSON.stringify(db_siswa)); render(); } }
 
     function saveGuru() {
         let id = document.getElementById('g-nip').value.trim().toUpperCase();
-        if(!id || !document.getElementById('g-nama').value) return alert("NIP dan Nama Wajib Diisi!");
-        let d = { id: id, nama: document.getElementById('g-nama').value, mapel: document.getElementById('g-mapel').value };
+        if(!id || !document.getElementById('g-nama').value) return alert("NIP/ID dan Nama Wajib Diisi!");
+        let d = { id: id, nama: document.getElementById('g-nama').value, mapel: document.getElementById('g-mapel').value, gaji: parseInt(document.getElementById('g-gaji-pokok').value)||0 };
         let idx = db_guru.findIndex(x => x.id === id); if(idx > -1) db_guru[idx] = d; else db_guru.push(d);
-        localStorage.setItem('sch_guru', JSON.stringify(db_guru)); resGuru(); render(); alert("Tersimpan!");
+        localStorage.setItem('sch_guru', JSON.stringify(db_guru)); resGuru(); render(); alert("Data Guru & Gaji Tersimpan!");
     }
     function editGuru(id) {
         let x = db_guru.find(y => y.id === id); if(!x) return;
         document.getElementById('g-nip').value = x.id; document.getElementById('g-nip').readOnly = true;
-        document.getElementById('g-nama').value = x.nama; document.getElementById('g-mapel').value = x.mapel;
+        document.getElementById('g-nama').value = x.nama; document.getElementById('g-mapel').value = x.mapel; document.getElementById('g-gaji-pokok').value = x.gaji || 0;
+        window.scrollTo(0,0);
     }
-    function resGuru() { document.getElementById('g-nip').value = ""; document.getElementById('g-nip').readOnly = false; document.getElementById('g-nama').value = ""; document.getElementById('g-mapel').value = ""; }
-    function delGuru(id) { if(confirm("Hapus?")) { db_guru = db_guru.filter(x => x.id !== id); localStorage.setItem('sch_guru', JSON.stringify(db_guru)); render(); } }
+    function resGuru() { document.getElementById('g-nip').value = ""; document.getElementById('g-nip').readOnly = false; document.getElementById('g-nama').value = ""; document.getElementById('g-mapel').value = ""; document.getElementById('g-gaji-pokok').value = 0; }
+    function delGuru(id) { if(confirm("Hapus Guru?")) { db_guru = db_guru.filter(x => x.id !== id); localStorage.setItem('sch_guru', JSON.stringify(db_guru)); render(); } }
 
     // --- FUNGSI AKADEMIK ---
     function renderSelectAbsen() {
@@ -374,7 +416,7 @@
         db_absen.push({ tgl: tgl, tipe: tipe, id: id, st: document.getElementById('a-st').value });
         localStorage.setItem('sch_absen', JSON.stringify(db_absen)); render(); alert("Absen Tersimpan!");
     }
-    function delAbsen(tgl, id) { if(confirm("Hapus?")) { db_absen = db_absen.filter(x => !(x.tgl === tgl && x.id === id)); localStorage.setItem('sch_absen', JSON.stringify(db_absen)); render(); } }
+    function delAbsen(tgl, id) { if(confirm("Hapus data absen?")) { db_absen = db_absen.filter(x => !(x.tgl === tgl && x.id === id)); localStorage.setItem('sch_absen', JSON.stringify(db_absen)); render(); } }
 
     function saveNilai() {
         let id = document.getElementById('n-siswa').value; let mapel = document.getElementById('n-mapel').value;
@@ -387,7 +429,7 @@
     }
     function delNilai(id_n) { if(confirm("Hapus nilai?")) { db_nilai = db_nilai.filter(x => x.id_nilai !== id_n); localStorage.setItem('sch_nilai', JSON.stringify(db_nilai)); render(); } }
 
-    // --- FUNGSI KEUANGAN ---
+    // --- FUNGSI KEUANGAN (SPP & GAJI) ---
     function cekSppSiswa() { let s = db_siswa.find(x => x.id === document.getElementById('p-siswa').value); if(s) document.getElementById('p-nominal').value = s.spp; }
     function bayarSPP() {
         let id = document.getElementById('p-siswa').value; let bln = document.getElementById('p-bln').value; let nom = parseInt(document.getElementById('p-nominal').value);
@@ -397,7 +439,7 @@
         db_spp = db_spp.filter(x => !(x.id === id && x.bulan === bln)); db_spp.push(res);
         localStorage.setItem('sch_spp', JSON.stringify(db_spp)); render(); generateRekapSPP(); cetakKuitansi(res.no_kuitansi);
     }
-    function hapusSPP(no_k) { if(confirm("Hapus pembayaran?")) { db_spp = db_spp.filter(x => x.no_kuitansi !== no_k); localStorage.setItem('sch_spp', JSON.stringify(db_spp)); render(); generateRekapSPP(); } }
+    function hapusSPP(no_k) { if(confirm("Hapus pembayaran SPP?")) { db_spp = db_spp.filter(x => x.no_kuitansi !== no_k); localStorage.setItem('sch_spp', JSON.stringify(db_spp)); render(); generateRekapSPP(); } }
     
     function generateRekapSPP() {
         let bln = document.getElementById('r-bln').value;
@@ -410,7 +452,18 @@
         document.getElementById('tabel-rekap-spp').innerHTML = html + "</table>";
     }
 
-    // --- CETAK DOKUMEN (PROFESIONAL TTD) ---
+    function cekGajiGuru() { let g = db_guru.find(x => x.id === document.getElementById('gaji-guru').value); if(g) document.getElementById('gaji-nominal').value = g.gaji || 0; }
+    function bayarGaji() {
+        let id = document.getElementById('gaji-guru').value; let bln = document.getElementById('gaji-bln').value; let nom = parseInt(document.getElementById('gaji-nominal').value);
+        if(!id || !nom) return alert("Pilih Guru dan isi nominal gaji!");
+        let cek = db_gaji.find(x => x.id_guru === id && x.bulan === bln); if(cek && !confirm("Guru ini sudah digaji bulan ini. Timpa data?")) return;
+        let res = { id_guru: id, bulan: bln, nominal: nom, tgl_bayar: hariIni, no_slip: "GJI"+Date.now() };
+        db_gaji = db_gaji.filter(x => !(x.id_guru === id && x.bulan === bln)); db_gaji.push(res);
+        localStorage.setItem('sch_gaji', JSON.stringify(db_gaji)); render(); cetakSlipGaji(res.no_slip);
+    }
+    function hapusGaji(no_s) { if(confirm("Hapus histori penggajian ini?")) { db_gaji = db_gaji.filter(x => x.no_slip !== no_s); localStorage.setItem('sch_gaji', JSON.stringify(db_gaji)); render(); } }
+
+    // --- CETAK DOKUMEN ---
     function cetakKuitansi(no_k) {
         let k = db_spp.find(x => x.no_kuitansi === no_k); let s = db_siswa.find(x => x.id === k.id);
         let nmBln = new Date(k.bulan + "-01").toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
@@ -437,23 +490,58 @@
                     <p class="ttd-nip">Siswa / Orang Tua</p>
                 </div>
                 <div class="ttd-box">
-                    <p>${kotaName}, ${formatTglIndo(k.tgl_bayar)}<br>Penerima / Tata Usaha,</p>
+                    <p>${kotaName}, ${formatTglIndo(k.tgl_bayar)}<br>Penerima / Bendahara,</p>
                     <p class="ttd-name">${bendaharaName}</p>
-                    <p class="ttd-nip">Bendahara Sekolah</p>
                 </div>
             </div>`;
         window.print();
     }
 
+    function cetakSlipGaji(no_s) {
+        let g_bayar = db_gaji.find(x => x.no_slip === no_s); let guru = db_guru.find(x => x.id === g_bayar.id_guru);
+        let nmBln = new Date(g_bayar.bulan + "-01").toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+        
+        document.getElementById('print-area').innerHTML = `
+            <div class="kop-surat">
+                <h2>${sekolahName}</h2>
+                <p>Alamat: ${kotaName} | Dokumen Rahasia Penggajian</p>
+                <h3 style="margin-top:20px; text-decoration:underline; font-size:18px;">SLIP GAJI GURU / KARYAWAN</h3>
+                <p style="margin-top:-10px;">No. Slip: ${g_bayar.no_slip}</p>
+            </div>
+            
+            <table class="tbl-no-border">
+                <tr><td width="120">Diberikan Kepada</td><td width="10">:</td><td><b>${guru.nama}</b></td></tr>
+                <tr><td>NIP / Jabatan</td><td>:</td><td>${guru.id} / ${guru.mapel}</td></tr>
+                <tr><td>Pembayaran Gaji Bulan</td><td>:</td><td><b>${nmBln}</b></td></tr>
+                <tr><td>Total Diterima (Bersih)</td><td>:</td><td style="font-size:16px; font-weight:bold; font-style:italic;">Rp ${g_bayar.nominal.toLocaleString('id-ID')}</td></tr>
+            </table>
+            
+            <div class="ttd-container" style="justify-content:space-around;">
+                <div class="ttd-box">
+                    <p>Penerima,</p>
+                    <p class="ttd-name">${guru.nama}</p>
+                </div>
+                <div class="ttd-box">
+                    <p>${kotaName}, ${formatTglIndo(g_bayar.tgl_bayar)}<br>Bendahara / Yayasan,</p>
+                    <p class="ttd-name">${bendaharaName}</p>
+                </div>
+            </div>`;
+        window.print();
+    }
+
+    // UPDATE: RAPORT MENGGUNAKAN TTD WALI KELAS YG DIPILIH & KEPALA SEKOLAH
     function cetakRaport() {
         let id = document.getElementById('r-siswa').value; if(!id) return alert("Pilih siswa!");
+        let id_wali = document.getElementById('r-walikelas').value; if(!id_wali) return alert("Pilih Wali Kelas dulu!");
+        
         let s = db_siswa.find(x => x.id === id);
+        let wk = db_guru.find(x => x.id === id_wali);
         let nilaiSiswa = db_nilai.filter(x => x.id_siswa === id);
         
         let html = `
             <div class="kop-surat">
                 <h2>${sekolahName}</h2>
-                <p>Dinas Pendidikan dan Kebudayaan Kota ${kotaName}</p>
+                <p>Dinas Pendidikan Kota ${kotaName}</p>
                 <h3 style="margin-top:20px; font-size:18px;">LEMBAR HASIL BELAJAR PESERTA DIDIK</h3>
             </div>
             
@@ -467,13 +555,13 @@
                 <tr>
                     <th rowspan="2">NO</th>
                     <th rowspan="2">MATA PELAJARAN</th>
-                    <th rowspan="2">SMT</th>
+                    <th rowspan="2">SEMESTER</th>
                     <th colspan="3">NILAI KOGNITIF</th>
                     <th rowspan="2">NILAI AKHIR</th>
                     <th rowspan="2">PREDIKAT</th>
                 </tr>
                 <tr>
-                    <th>TGS</th><th>UTS</th><th>UAS</th>
+                    <th>TUGAS</th><th>UTS</th><th>UAS</th>
                 </tr>`;
         
         let no = 1;
@@ -485,14 +573,15 @@
         
         html += `</table>
             
-            <div class="ttd-container">
+            <div class="ttd-container" style="justify-content: space-between;">
                 <div class="ttd-box">
                     <p>Mengetahui,<br>Orang Tua / Wali Siswa</p>
                     <p class="ttd-name" style="text-decoration:none; border-bottom:1px dotted #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
                 </div>
                 <div class="ttd-box">
-                    <p><br>Wali Kelas</p>
-                    <p class="ttd-name" style="text-decoration:none; border-bottom:1px dotted #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                    <p><br>Wali Kelas,</p>
+                    <p class="ttd-name">${wk.nama}</p>
+                    <p class="ttd-nip">NIP. ${wk.id}</p>
                 </div>
                 <div class="ttd-box">
                     <p>${kotaName}, ${formatTglIndo(hariIni)}<br>Kepala Sekolah,</p>
@@ -506,27 +595,22 @@
 
     // --- PENGATURAN & RENDER ---
     function saveSet() { 
-        let n = document.getElementById('set-nama').value;
-        let k = document.getElementById('set-kota').value;
-        let ks = document.getElementById('set-kepsek').value;
-        let nip = document.getElementById('set-nip').value;
+        let n = document.getElementById('set-nama').value; let k = document.getElementById('set-kota').value;
+        let ks = document.getElementById('set-kepsek').value; let nip = document.getElementById('set-nip').value;
         let b = document.getElementById('set-bendahara').value;
         
-        if(n) localStorage.setItem('sch_nama', n);
-        if(k) localStorage.setItem('sch_kota', k);
-        if(ks) localStorage.setItem('sch_kepsek', ks);
-        if(nip) localStorage.setItem('sch_nip', nip);
+        if(n) localStorage.setItem('sch_nama', n); if(k) localStorage.setItem('sch_kota', k);
+        if(ks) localStorage.setItem('sch_kepsek', ks); if(nip) localStorage.setItem('sch_nip', nip);
         if(b) localStorage.setItem('sch_bendahara', b);
-        
-        alert("Identitas Sekolah Tersimpan!"); location.reload(); 
+        alert("Identitas Tersimpan!"); location.reload(); 
     }
     
     function exportDB() { 
         let d = { 
-            sch_siswa: db_siswa, sch_guru: db_guru, sch_absen: db_absen, sch_spp: db_spp, sch_nilai: db_nilai, 
+            sch_siswa: db_siswa, sch_guru: db_guru, sch_absen: db_absen, sch_spp: db_spp, sch_gaji: db_gaji, sch_nilai: db_nilai, 
             sch_nama: sekolahName, sch_kota: kotaName, sch_kepsek: kepsekName, sch_nip: nipKepsek, sch_bendahara: bendaharaName 
         }; 
-        let a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(d)], {type: "application/json"})); a.download = `Backup_SIMS.json`; a.click(); 
+        let a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(d)], {type: "application/json"})); a.download = `Backup_SIMS_Pro.json`; a.click(); 
     }
     
     function importDB(e) { 
@@ -535,40 +619,40 @@
             try { 
                 let d = JSON.parse(evt.target.result); 
                 if(d.sch_siswa) { 
-                    localStorage.setItem('sch_siswa', JSON.stringify(d.sch_siswa)); 
-                    localStorage.setItem('sch_guru', JSON.stringify(d.sch_guru)); 
-                    localStorage.setItem('sch_absen', JSON.stringify(d.sch_absen)); 
-                    localStorage.setItem('sch_spp', JSON.stringify(d.sch_spp)); 
+                    localStorage.setItem('sch_siswa', JSON.stringify(d.sch_siswa)); localStorage.setItem('sch_guru', JSON.stringify(d.sch_guru)); 
+                    localStorage.setItem('sch_absen', JSON.stringify(d.sch_absen)); localStorage.setItem('sch_spp', JSON.stringify(d.sch_spp)); 
+                    if(d.sch_gaji) localStorage.setItem('sch_gaji', JSON.stringify(d.sch_gaji));
                     if(d.sch_nilai) localStorage.setItem('sch_nilai', JSON.stringify(d.sch_nilai)); 
                     
-                    if(d.sch_nama) localStorage.setItem('sch_nama', d.sch_nama); 
-                    if(d.sch_kota) localStorage.setItem('sch_kota', d.sch_kota); 
-                    if(d.sch_kepsek) localStorage.setItem('sch_kepsek', d.sch_kepsek); 
-                    if(d.sch_nip) localStorage.setItem('sch_nip', d.sch_nip); 
+                    if(d.sch_nama) localStorage.setItem('sch_nama', d.sch_nama); if(d.sch_kota) localStorage.setItem('sch_kota', d.sch_kota); 
+                    if(d.sch_kepsek) localStorage.setItem('sch_kepsek', d.sch_kepsek); if(d.sch_nip) localStorage.setItem('sch_nip', d.sch_nip); 
                     if(d.sch_bendahara) localStorage.setItem('sch_bendahara', d.sch_bendahara); 
                     
-                    alert("Restore OK!"); location.reload(); 
+                    alert("Restore Database OK!"); location.reload(); 
                 } 
-            } catch(err) { alert("Error"); } 
+            } catch(err) { alert("Error saat import data!"); } 
         }; r.readAsText(f); 
     }
-    function resetDB() { if(confirm("HAPUS TOTAL?")) { localStorage.clear(); location.reload(); } }
+    function resetDB() { if(confirm("HAPUS TOTAL SEMUA DATA SEKOLAH?")) { localStorage.clear(); location.reload(); } }
 
     function render() {
         document.getElementById('v-nama-sekolah').innerText = sekolahName; 
-        
-        // Isi form Seting
-        document.getElementById('set-nama').value = sekolahName;
-        document.getElementById('set-kota').value = kotaName;
-        document.getElementById('set-kepsek').value = kepsekName;
-        document.getElementById('set-nip').value = nipKepsek;
-        document.getElementById('set-bendahara').value = bendaharaName;
+        document.getElementById('set-nama').value = sekolahName; document.getElementById('set-kota').value = kotaName;
+        document.getElementById('set-kepsek').value = kepsekName; document.getElementById('set-nip').value = nipKepsek; document.getElementById('set-bendahara').value = bendaharaName;
 
         document.getElementById('v-tgl').innerText = t_now.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         
+        // KALKULASI DASHBOARD
         document.getElementById('t-siswa').innerText = db_siswa.length; document.getElementById('t-guru').innerText = db_guru.length;
-        document.getElementById('t-spp').innerText = "Rp " + db_spp.filter(x => x.bulan === bulanIni).reduce((s, x) => s + x.nominal, 0).toLocaleString('id-ID');
+        let totSpp = db_spp.filter(x => x.bulan === bulanIni).reduce((s, x) => s + x.nominal, 0);
+        let totGaji = db_gaji.filter(x => x.bulan === bulanIni).reduce((s, x) => s + x.nominal, 0);
+        let saldo = totSpp - totGaji;
+        
+        document.getElementById('t-spp').innerText = "Rp " + totSpp.toLocaleString('id-ID');
+        document.getElementById('t-gaji').innerText = "Rp " + totGaji.toLocaleString('id-ID');
+        document.getElementById('t-saldo').innerText = "Rp " + saldo.toLocaleString('id-ID');
 
+        // DAFTAR SISWA & SELECT
         let cSiswa = document.getElementById('cari-siswa')?document.getElementById('cari-siswa').value.toLowerCase():"";
         let hSiswa = "<table>"; let optSiswa = "<option value=''>-- Pilih Siswa --</option>";
         db_siswa.filter(x => x.nama.toLowerCase().includes(cSiswa) || x.id.toLowerCase().includes(cSiswa)).forEach(x => { hSiswa += `<tr><td><b>${x.nama}</b><br><small>${x.id} | ${x.kelas}</small></td><td align="right" style="white-space:nowrap;"><button class="btn-sm btn-warn" onclick="editSiswa('${x.id}')">✏️</button> <button class="btn-sm btn-danger" onclick="delSiswa('${x.id}')">❌</button></td></tr>`; });
@@ -576,19 +660,30 @@
         db_siswa.forEach(x => optSiswa += `<option value="${x.id}">${x.id} - ${x.nama} (${x.kelas})</option>`);
         document.getElementById('p-siswa').innerHTML = optSiswa; document.getElementById('n-siswa').innerHTML = optSiswa; document.getElementById('r-siswa').innerHTML = optSiswa;
 
+        // DAFTAR GURU & SELECT (Termasuk Select Wali Kelas & Gaji)
         let cGuru = document.getElementById('cari-guru')?document.getElementById('cari-guru').value.toLowerCase():"";
-        let hGuru = "<table>"; db_guru.filter(x => x.nama.toLowerCase().includes(cGuru) || x.id.toLowerCase().includes(cGuru)).forEach(x => { hGuru += `<tr><td><b>${x.nama}</b><br><small>${x.id} | ${x.mapel}</small></td><td align="right"><button class="btn-sm btn-warn" onclick="editGuru('${x.id}')">✏️</button> <button class="btn-sm btn-danger" onclick="delGuru('${x.id}')">❌</button></td></tr>`; });
+        let hGuru = "<table>"; let optGuru = "<option value=''>-- Pilih Guru --</option>";
+        db_guru.filter(x => x.nama.toLowerCase().includes(cGuru) || x.id.toLowerCase().includes(cGuru)).forEach(x => { 
+            let gp = x.gaji ? `Rp ${(x.gaji/1000)}k` : '-';
+            hGuru += `<tr><td><b>${x.nama}</b><br><small>${x.mapel} | Gaji: ${gp}</small></td><td align="right"><button class="btn-sm btn-warn" onclick="editGuru('${x.id}')">✏️</button> <button class="btn-sm btn-danger" onclick="delGuru('${x.id}')">❌</button></td></tr>`; 
+        });
         document.getElementById('list-guru').innerHTML = hGuru + "</table>";
+        db_guru.forEach(x => optGuru += `<option value="${x.id}">${x.nama} (${x.mapel})</option>`);
+        document.getElementById('gaji-guru').innerHTML = optGuru; document.getElementById('r-walikelas').innerHTML = optGuru;
 
+        // TABEL HISTORI
         let hAbsen = "<table>"; db_absen.slice(-15).reverse().forEach(x => { let k = x.tipe==="Siswa" ? db_siswa.find(y=>y.id===x.id) : db_guru.find(y=>y.id===x.id); hAbsen += `<tr><td>${x.tgl.slice(8)}/${x.tgl.slice(5,7)}</td><td><b>${k?k.nama:'?'}</b><br><small>${x.tipe}</small></td><td><span class="badge ${x.st==='HADIR'?'bg-green':'bg-red'}">${x.st}</span></td><td><button class="btn-sm btn-danger" onclick="delAbsen('${x.tgl}','${x.id}')">❌</button></td></tr>`; });
         document.getElementById('list-absen').innerHTML = hAbsen + "</table>";
 
-        let hNilai = "<table><tr><th>MAPEL</th><th>SISWA</th><th>N.A</th><th>OPSI</th></tr>";
+        let hNilai = "<table><tr><th>MAPEL</th><th>SISWA</th><th>NILAI AKHIR</th><th>OPSI</th></tr>";
         db_nilai.slice(-15).reverse().forEach(x => { let s = db_siswa.find(y=>y.id===x.id_siswa); let na = Math.round((x.tugas+x.uts+x.uas)/3); hNilai += `<tr><td>${x.mapel}</td><td>${s?s.nama:'?'}</td><td><b>${na}</b></td><td><button class="btn-sm btn-danger" onclick="delNilai('${x.id_nilai}')">❌</button></td></tr>`; });
         document.getElementById('list-nilai').innerHTML = hNilai + "</table>";
 
         let hSpp = "<table>"; db_spp.slice(-15).reverse().forEach(x => { let s = db_siswa.find(y=>y.id===x.id); hSpp += `<tr><td>${x.bulan.slice(5,7)}/${x.bulan.slice(2,4)}</td><td><b>${s?s.nama:'?'}</b><br><small>${x.tgl_bayar}</small></td><td>Rp ${(x.nominal/1000)}k</td><td style="white-space:nowrap;"><button class="btn-sm btn-main" onclick="cetakKuitansi('${x.no_kuitansi}')">🖨️</button> <button class="btn-sm btn-danger" onclick="hapusSPP('${x.no_kuitansi}')">❌</button></td></tr>`; });
         document.getElementById('list-spp').innerHTML = hSpp + "</table>";
+        
+        let hGaji = "<table>"; db_gaji.slice(-15).reverse().forEach(x => { let g = db_guru.find(y=>y.id===x.id_guru); hGaji += `<tr><td>${x.bulan.slice(5,7)}/${x.bulan.slice(2,4)}</td><td><b>${g?g.nama:'?'}</b><br><small>${x.tgl_bayar}</small></td><td>Rp ${(x.nominal/1000)}k</td><td style="white-space:nowrap;"><button class="btn-sm btn-danger" style="background:#8b5cf6;" onclick="cetakSlipGaji('${x.no_slip}')">🖨️</button> <button class="btn-sm btn-danger" onclick="hapusGaji('${x.no_slip}')">❌</button></td></tr>`; });
+        document.getElementById('list-gaji').innerHTML = hGaji + "</table>";
 
         if(document.getElementById('a-sel').innerHTML === "") renderSelectAbsen();
     }

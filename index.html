@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sistem Informasi Manajemen Sekolah (SIMS) Pro</title>
+    
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#1e3a8a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SIMS Pro">
+
+    <style>
+        :root { --primary: #1e3a8a; --accent: #3b82f6; --success: #10b981; --danger: #ef4444; --warn: #f59e0b; --bg: #f8fafc; --text: #334155; }
+        * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background: var(--bg); color: var(--text); margin: 0; padding: 12px; padding-bottom: 80px; font-size: 13px; }
+        .card { background: white; padding: 16px; border-radius: 10px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 16px; border: 1px solid #e2e8f0; }
+        h3 { margin: 0 0 15px 0; color: var(--primary); border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; font-size: 14px; text-transform: uppercase; font-weight: bold; display: flex; justify-content: space-between; align-items: center;}
+        input, select, button { width: 100%; padding: 10px 12px; margin: 5px 0 12px 0; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 13px; outline: none; transition: 0.2s; }
+        input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(59,130,246,0.2); }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .btn-main { background: var(--accent); color: white; border: none; font-weight: bold; cursor: pointer; }
+        .btn-main:hover { background: #2563eb; }
+        .btn-success { background: var(--success); color: white; border: none; font-weight: bold; cursor: pointer; }
+        .btn-danger { background: var(--danger); color: white; border: none; cursor: pointer; }
+        .btn-warn { background: var(--warn); color: white; border: none; cursor: pointer; }
+        .btn-sm { padding: 5px 8px; font-size: 11px; margin: 0 2px 0 0; width: auto; border-radius: 4px; display: inline-block;}
+        table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 5px; }
+        th, td { padding: 8px; border-bottom: 1px solid #e2e8f0; text-align: left; vertical-align: middle; }
+        th { background: #f8fafc; font-weight: bold; color: var(--primary); text-transform: uppercase; }
+        .badge { padding: 3px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; }
+        .bg-green { background: #dcfce7; color: #16a34a; } .bg-red { background: #fee2e2; color: #dc2626; } .bg-blue { background: #dbeafe; color: #2563eb; }
+        
+        .page { display: none; animation: fadeIn 0.3s ease; } .active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #e2e8f0; z-index: 1000; box-shadow: 0 -4px 10px rgba(0,0,0,0.05); }
+        .nav-item { border: none; background: none; font-size: 10px; color: #64748b; display: flex; flex-direction: column; align-items: center; width: 20%; cursor: pointer; font-weight: 600; margin:0; padding:0;}
+        .nav-item.active { color: var(--accent); }
+        .nav-icon { font-size: 20px; margin-bottom: 2px; }
+        .scrollable { max-height: 400px; overflow-y: auto; }
+        label { font-size: 11px; font-weight: 600; color: #475569; margin-bottom: -3px; display: block; }
+
+        /* Kuitansi SPP Print Layout */
+        .print-area { display: none; }
+        @media print { 
+            body { background: white; padding: 0; margin: 0; }
+            .no-print { display: none !important; } 
+            .card { border: none; box-shadow: none; margin: 0; padding: 0; }
+            .print-area { display: block; font-family: 'Courier New', Courier, monospace; border: 2px solid #000; padding: 20px; font-size: 12px; }
+            .struk-header { text-align: center; border-bottom: 2px dashed #000; padding-bottom: 10px; margin-bottom: 10px; }
+            .struk-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+            .struk-table td { border: none; padding: 4px; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="p-home" class="page active no-print">
+    <div class="card" style="background: linear-gradient(135deg, var(--primary), #1e293b); color:white; border:none; text-align:center; padding: 25px 15px;">
+        <h2 id="v-nama-sekolah" style="margin:0; font-size: 20px; letter-spacing: 1px;">NAMA SEKOLAH</h2>
+        <p id="v-tgl" style="margin:5px 0 0 0; opacity:0.8; font-size:12px;"></p>
+        <button id="btn-install" class="btn-success no-print" style="display:none; margin-top:15px; width:auto; padding:8px 15px;">📱 INSTALL APLIKASI</button>
+    </div>
+    <div class="grid">
+        <div class="card" style="text-align:center; padding: 15px 5px; border-top: 4px solid var(--accent);">
+            <div style="font-size:11px; color:#64748b; font-weight:bold;">TOTAL SISWA</div>
+            <h1 id="t-siswa" style="margin:5px 0 0 0; color:var(--accent); font-size:32px;">0</h1>
+        </div>
+        <div class="card" style="text-align:center; padding: 15px 5px; border-top: 4px solid var(--success);">
+            <div style="font-size:11px; color:#64748b; font-weight:bold;">TOTAL GURU</div>
+            <h1 id="t-guru" style="margin:5px 0 0 0; color:var(--success); font-size:32px;">0</h1>
+        </div>
+    </div>
+    <div class="card" style="text-align:center; padding: 15px 5px; border-top: 4px solid var(--warn);">
+        <div style="font-size:11px; color:#64748b; font-weight:bold;">PENDAPATAN SPP BULAN INI</div>
+        <h1 id="t-spp" style="margin:5px 0 0 0; color:var(--warn); font-size:28px;">Rp 0</h1>
+    </div>
+</div>
+
+<div id="p-siswa" class="page no-print">
+    <div class="card">
+        <h3 id="fs-title">🎓 DATA MASTER SISWA</h3>
+        <div class="grid">
+            <div><label>NIS / NISN</label><input type="text" id="s-nis" placeholder="Nomor Induk Siswa" style="text-transform:uppercase; font-weight:bold;"></div>
+            <div><label>NAMA SISWA</label><input type="text" id="s-nama" placeholder="Nama Lengkap"></div>
+        </div>
+        <div class="grid">
+            <div><label>KELAS</label><input type="text" id="s-kelas" placeholder="Cth: X IPA 1"></div>
+            <div><label>TARIF SPP (Bulan)</label><input type="number" id="s-spp" value="0" placeholder="Nominal SPP"></div>
+        </div>
+        <button id="btn-save-siswa" class="btn-main" onclick="saveSiswa()">💾 SIMPAN DATA SISWA</button>
+        <button id="btn-cancel-siswa" class="btn-danger" style="display:none;" onclick="resSiswa()">❌ BATAL</button>
+    </div>
+    <div class="card">
+        <input type="text" id="cari-siswa" placeholder="🔍 Cari Siswa..." onkeyup="render()">
+        <div class="scrollable" id="list-siswa"></div>
+    </div>
+</div>
+
+<div id="p-guru" class="page no-print">
+    <div class="card">
+        <h3 id="fg-title">👨‍🏫 DATA MASTER GURU</h3>
+        <div class="grid">
+            <div><label>NIP / ID GURU</label><input type="text" id="g-nip" placeholder="Nomor Induk Pegawai" style="text-transform:uppercase; font-weight:bold;"></div>
+            <div><label>NAMA GURU</label><input type="text" id="g-nama" placeholder="Nama Lengkap & Gelar"></div>
+        </div>
+        <label>MATA PELAJARAN / JABATAN</label><input type="text" id="g-mapel" placeholder="Cth: Matematika / Wali Kelas">
+        <button id="btn-save-guru" class="btn-main" onclick="saveGuru()">💾 SIMPAN DATA GURU</button>
+        <button id="btn-cancel-guru" class="btn-danger" style="display:none;" onclick="resGuru()">❌ BATAL</button>
+    </div>
+    <div class="card">
+        <input type="text" id="cari-guru" placeholder="🔍 Cari Guru..." onkeyup="render()">
+        <div class="scrollable" id="list-guru"></div>
+    </div>
+</div>
+
+<div id="p-akademik" class="page no-print">
+    <div class="card">
+        <h3>⏱️ ABSENSI HARIAN</h3>
+        <div class="grid">
+            <div><label>TANGGAL</label><input type="date" id="a-tgl"></div>
+            <div>
+                <label>TIPE</label>
+                <select id="a-tipe" onchange="renderSelectAbsen()">
+                    <option value="Siswa">Siswa</option>
+                    <option value="Guru">Guru</option>
+                </select>
+            </div>
+        </div>
+        <div class="grid">
+            <div><label>PILIH NAMA</label><select id="a-sel"></select></div>
+            <div>
+                <label>KETERANGAN</label>
+                <select id="a-st">
+                    <option value="HADIR">HADIR</option>
+                    <option value="SAKIT">SAKIT</option>
+                    <option value="IZIN">IZIN</option>
+                    <option value="ALPA">ALPA</option>
+                </select>
+            </div>
+        </div>
+        <button class="btn-main" onclick="saveAbsen()">⚡ SUBMIT ABSENSI</button>
+    </div>
+
+    <div class="card">
+        <h3>💰 PEMBAYARAN SPP</h3>
+        <div class="grid">
+            <div><label>PILIH SISWA</label><select id="p-siswa-sel" onchange="cekSppSiswa()"></select></div>
+            <div><label>BULAN SPP</label><input type="month" id="p-bln"></div>
+        </div>
+        <label>NOMINAL BAYAR (Rp)</label>
+        <input type="number" id="p-nominal" value="0">
+        <button class="btn-success" onclick="bayarSPP()">✅ PROSES PEMBAYARAN</button>
+    </div>
+
+    <div class="card">
+        <h3>📜 HISTORI PEMBAYARAN SPP</h3>
+        <div class="scrollable" id="list-spp"></div>
+    </div>
+</div>
+
+<div id="p-set" class="page no-print">
+    <div class="card">
+        <h3>⚙️ PENGATURAN INSTANSI</h3>
+        <label>NAMA SEKOLAH / YAYASAN</label>
+        <input type="text" id="set-nama" placeholder="Cth: SMA BINA BANGSA">
+        <button class="btn-main" onclick="saveSet()">🔄 SIMPAN NAMA</button>
+    </div>
+    
+    <div class="card" style="border-top: 3px solid var(--success);">
+        <h3 style="color:var(--success)">💾 BACKUP & RESTORE DATA</h3>
+        <div class="grid">
+            <button class="btn-success" onclick="exportDB()">⬇️ BACKUP DATA (.json)</button>
+            <button class="btn-warn" onclick="document.getElementById('import-file').click()">⬆️ RESTORE DATA</button>
+            <input type="file" id="import-file" style="display:none;" accept=".json" onchange="importDB(event)">
+        </div>
+    </div>
+
+    <div class="card" style="border-top: 3px solid var(--danger);">
+        <h3 style="color:var(--danger)">⚠️ RESET SISTEM</h3>
+        <button class="btn-danger" style="padding:15px;" onclick="resetDB()">🗑️ HAPUS SELURUH DATA SEKOLAH</button>
+    </div>
+</div>
+
+<div id="print-kuitansi" class="print-area"></div>
+
+<nav class="bottom-nav no-print">
+    <div class="nav-item active" onclick="buka('home')"><div class="nav-icon">📊</div>HOME</div>
+    <div class="nav-item" onclick="buka('siswa')"><div class="nav-icon">🎓</div>SISWA</div>
+    <div class="nav-item" onclick="buka('guru')"><div class="nav-icon">👨‍🏫</div>GURU</div>
+    <div class="nav-item" onclick="buka('akademik')"><div class="nav-icon">💰</div>AKADEMIK</div>
+    <div class="nav-item" onclick="buka('set')"><div class="nav-icon">⚙️</div>SETING</div>
+</nav>
+
+<script>
+    // --- PWA REGISTRATION ---
+    let deferredPrompt;
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').then(reg => console.log('SW Registered')).catch(err => console.log('SW Error', err));
+      });
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault(); deferredPrompt = e;
+      const btn = document.getElementById('btn-install');
+      btn.style.display = 'inline-block';
+      btn.addEventListener('click', () => {
+        btn.style.display = 'none'; deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((res) => { deferredPrompt = null; });
+      });
+    });
+
+    // --- INISIALISASI DATABASE LOCALSTORAGE ---
+    let db_siswa = JSON.parse(localStorage.getItem('sch_siswa')) || [];
+    let db_guru = JSON.parse(localStorage.getItem('sch_guru')) || [];
+    let db_absen = JSON.parse(localStorage.getItem('sch_absen')) || [];
+    let db_spp = JSON.parse(localStorage.getItem('sch_spp')) || [];
+    let sekolahName = localStorage.getItem('sch_nama') || "NAMA INSTANSI SEKOLAH";
+
+    // Default Date
+    let t_now = new Date();
+    let hariIni = new Date(t_now.getTime() - (t_now.getTimezoneOffset() * 60000)).toISOString().slice(0,10);
+    let bulanIni = hariIni.slice(0,7);
+    document.getElementById('a-tgl').value = hariIni;
+    document.getElementById('p-bln').value = bulanIni;
+
+    // --- FUNGSI SISWA ---
+    function saveSiswa() {
+        let id = document.getElementById('s-nis').value.trim().toUpperCase();
+        if(!id || !document.getElementById('s-nama').value) return alert("NIS dan Nama Wajib Diisi!");
+        let d = { 
+            id: id, nama: document.getElementById('s-nama').value, 
+            kelas: document.getElementById('s-kelas').value, 
+            spp: parseInt(document.getElementById('s-spp').value) || 0 
+        };
+        let idx = db_siswa.findIndex(x => x.id === id);
+        if(idx > -1) db_siswa[idx] = d; else db_siswa.push(d);
+        localStorage.setItem('sch_siswa', JSON.stringify(db_siswa));
+        resSiswa(); render(); alert("Data Siswa Disimpan!");
+    }
+    function editSiswa(id) {
+        let x = db_siswa.find(y => y.id === id); if(!x) return;
+        document.getElementById('s-nis').value = x.id; document.getElementById('s-nis').readOnly = true; document.getElementById('s-nis').style.background = "#e2e8f0";
+        document.getElementById('s-nama').value = x.nama; document.getElementById('s-kelas').value = x.kelas; document.getElementById('s-spp').value = x.spp;
+        document.getElementById('fs-title').innerHTML = "✏️ EDIT SISWA"; document.getElementById('btn-save-siswa').innerHTML = "🔄 UPDATE"; document.getElementById('btn-cancel-siswa').style.display = "block";
+        window.scrollTo(0,0);
+    }
+    function resSiswa() {
+        document.getElementById('s-nis').value = ""; document.getElementById('s-nis').readOnly = false; document.getElementById('s-nis').style.background = "white";
+        document.getElementById('s-nama').value = ""; document.getElementById('s-kelas').value = ""; document.getElementById('s-spp').value = 0;
+        document.getElementById('fs-title').innerHTML = "🎓 DATA MASTER SISWA"; document.getElementById('btn-save-siswa').innerHTML = "💾 SIMPAN DATA SISWA"; document.getElementById('btn-cancel-siswa').style.display = "none";
+    }
+    function delSiswa(id) { if(confirm("Hapus Siswa?")) { db_siswa = db_siswa.filter(x => x.id !== id); localStorage.setItem('sch_siswa', JSON.stringify(db_siswa)); render(); } }
+
+    // --- FUNGSI GURU ---
+    function saveGuru() {
+        let id = document.getElementById('g-nip').value.trim().toUpperCase();
+        if(!id || !document.getElementById('g-nama').value) return alert("NIP dan Nama Wajib Diisi!");
+        let d = { id: id, nama: document.getElementById('g-nama').value, mapel: document.getElementById('g-mapel').value };
+        let idx = db_guru.findIndex(x => x.id === id);
+        if(idx > -1) db_guru[idx] = d; else db_guru.push(d);
+        localStorage.setItem('sch_guru', JSON.stringify(db_guru));
+        resGuru(); render(); alert("Data Guru Disimpan!");
+    }
+    function editGuru(id) {
+        let x = db_guru.find(y => y.id === id); if(!x) return;
+        document.getElementById('g-nip').value = x.id; document.getElementById('g-nip').readOnly = true; document.getElementById('g-nip').style.background = "#e2e8f0";
+        document.getElementById('g-nama').value = x.nama; document.getElementById('g-mapel').value = x.mapel;
+        document.getElementById('fg-title').innerHTML = "✏️ EDIT GURU"; document.getElementById('btn-save-guru').innerHTML = "🔄 UPDATE"; document.getElementById('btn-cancel-guru').style.display = "block";
+        window.scrollTo(0,0);
+    }
+    function resGuru() {
+        document.getElementById('g-nip').value = ""; document.getElementById('g-nip').readOnly = false; document.getElementById('g-nip').style.background = "white";
+        document.getElementById('g-nama').value = ""; document.getElementById('g-mapel').value = "";
+        document.getElementById('fg-title').innerHTML = "👨‍🏫 DATA MASTER GURU"; document.getElementById('btn-save-guru').innerHTML = "💾 SIMPAN DATA GURU"; document.getElementById('btn-cancel-guru').style.display = "none";
+    }
+    function delGuru(id) { if(confirm("Hapus Guru?")) { db_guru = db_guru.filter(x => x.id !== id); localStorage.setItem('sch_guru', JSON.stringify(db_guru)); render(); } }
+
+    // --- FUNGSI AKADEMIK (ABSEN & SPP) ---
+    function renderSelectAbsen() {
+        let tipe = document.getElementById('a-tipe').value;
+        let opt = "<option value=''>-- Pilih --</option>";
+        if(tipe === "Siswa") db_siswa.forEach(x => opt += `<option value="${x.id}">${x.id} - ${x.nama} (${x.kelas})</option>`);
+        else db_guru.forEach(x => opt += `<option value="${x.id}">${x.id} - ${x.nama}</option>`);
+        document.getElementById('a-sel').innerHTML = opt;
+    }
+
+    function saveAbsen() {
+        let id = document.getElementById('a-sel').value; let tgl = document.getElementById('a-tgl').value; let tipe = document.getElementById('a-tipe').value;
+        if(!id) return alert("Pilih Nama!");
+        db_absen = db_absen.filter(x => !(x.tgl === tgl && x.id === id));
+        db_absen.push({ tgl: tgl, tipe: tipe, id: id, st: document.getElementById('a-st').value });
+        localStorage.setItem('sch_absen', JSON.stringify(db_absen)); alert("Absensi "+tipe+" Tersimpan!");
+    }
+
+    function cekSppSiswa() {
+        let id = document.getElementById('p-siswa-sel').value;
+        let s = db_siswa.find(x => x.id === id);
+        if(s) document.getElementById('p-nominal').value = s.spp;
+    }
+
+    function bayarSPP() {
+        let id = document.getElementById('p-siswa-sel').value; let bln = document.getElementById('p-bln').value; let nom = parseInt(document.getElementById('p-nominal').value);
+        if(!id || !nom) return alert("Pilih Siswa & Isi Nominal!");
+        
+        // Cek apakah bulan ini sudah bayar
+        let cek = db_spp.find(x => x.id === id && x.bulan === bln);
+        if(cek && !confirm("Siswa ini sudah bayar SPP untuk bulan tersebut. Timpa data?")) return;
+
+        let res = { id: id, bulan: bln, nominal: nom, tgl_bayar: hariIni, no_kuitansi: "SPP"+Date.now() };
+        db_spp = db_spp.filter(x => !(x.id === id && x.bulan === bln)); // Hapus data lama jika ditimpa
+        db_spp.push(res);
+        localStorage.setItem('sch_spp', JSON.stringify(db_spp)); 
+        render(); alert("Pembayaran SPP Berhasil!"); cetakKuitansi(res.no_kuitansi);
+    }
+
+    function hapusSPP(no_kuitansi) {
+        if(confirm("Hapus riwayat pembayaran ini?")) {
+            db_spp = db_spp.filter(x => x.no_kuitansi !== no_kuitansi);
+            localStorage.setItem('sch_spp', JSON.stringify(db_spp)); render();
+        }
+    }
+
+    function cetakKuitansi(no_kuitansi) {
+        let k = db_spp.find(x => x.no_kuitansi === no_kuitansi); if(!k) return;
+        let s = db_siswa.find(x => x.id === k.id); if(!s) return;
+        let nmBln = new Date(k.bulan + "-01").toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+        
+        document.getElementById('print-kuitansi').innerHTML = `
+            <div class="struk-header">
+                <h2>${sekolahName}</h2>
+                <p>KUITANSI PEMBAYARAN SPP</p>
+                <small>No: ${k.no_kuitansi}</small>
+            </div>
+            <table class="struk-table">
+                <tr><td>Tgl Bayar</td><td>: ${k.tgl_bayar}</td></tr>
+                <tr><td>NIS</td><td>: ${s.id}</td></tr>
+                <tr><td>Nama</td><td>: ${s.nama}</td></tr>
+                <tr><td>Kelas</td><td>: ${s.kelas}</td></tr>
+                <tr><td>Periode</td><td>: ${nmBln}</td></tr>
+            </table>
+            <div style="border-top:1px dashed #000; padding-top:10px; font-weight:bold; font-size:16px; text-align:center; margin-bottom:20px;">
+                TOTAL: Rp ${k.nominal.toLocaleString('id-ID')}
+            </div>
+            <div style="text-align:center;">
+                <p>Admin / Tata Usaha</p><br><br>
+                <p>(....................)</p>
+            </div>
+        `;
+        window.print();
+    }
+
+    // --- PENGATURAN & RENDER ---
+    function saveSet() { let n = document.getElementById('set-nama').value; if(n){ localStorage.setItem('sch_nama', n); alert("Tersimpan!"); location.reload(); } }
+    function exportDB() {
+        let data = { sch_siswa: db_siswa, sch_guru: db_guru, sch_absen: db_absen, sch_spp: db_spp, sch_nama: sekolahName };
+        let blob = new Blob([JSON.stringify(data)], {type: "application/json"});
+        let a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Backup_SIMS_${hariIni}.json`; a.click();
+    }
+    function importDB(e) {
+        let file = e.target.files[0]; if(!file) return; let reader = new FileReader();
+        reader.onload = function(evt) {
+            try { let d = JSON.parse(evt.target.result);
+                if(d.sch_siswa) { 
+                    localStorage.setItem('sch_siswa', JSON.stringify(d.sch_siswa)); localStorage.setItem('sch_guru', JSON.stringify(d.sch_guru));
+                    localStorage.setItem('sch_absen', JSON.stringify(d.sch_absen)); localStorage.setItem('sch_spp', JSON.stringify(d.sch_spp));
+                    if(d.sch_nama) localStorage.setItem('sch_nama', d.sch_nama);
+                    alert("Restore Berhasil!"); location.reload();
+                } else alert("File Tidak Valid!");
+            } catch(err) { alert("Error!"); }
+        }; reader.readAsText(file);
+    }
+    function resetDB() { if(confirm("HAPUS SEMUA DATA SEKOLAH?")) { localStorage.clear(); location.reload(); } }
+
+    function render() {
+        document.getElementById('v-nama-sekolah').innerText = sekolahName; document.getElementById('set-nama').value = sekolahName;
+        document.getElementById('v-tgl').innerText = t_now.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        
+        // Counter
+        document.getElementById('t-siswa').innerText = db_siswa.length;
+        document.getElementById('t-guru').innerText = db_guru.length;
+        let totSppBulanIni = db_spp.filter(x => x.bulan === bulanIni).reduce((sum, x) => sum + x.nominal, 0);
+        document.getElementById('t-spp').innerText = "Rp " + totSppBulanIni.toLocaleString('id-ID');
+
+        // Render Siswa
+        let cSiswa = document.getElementById('cari-siswa') ? document.getElementById('cari-siswa').value.toLowerCase() : "";
+        let hSiswa = "<table>"; let optSiswa = "<option value=''>-- Pilih Siswa --</option>";
+        db_siswa.filter(x => x.nama.toLowerCase().includes(cSiswa) || x.id.toLowerCase().includes(cSiswa)).forEach(x => {
+            hSiswa += `<tr><td><b>${x.nama}</b><br><span style="color:#64748b; font-size:10px;">${x.id} | Kls: ${x.kelas}</span></td><td align="right" style="white-space:nowrap;"><button class="btn-sm btn-warn" onclick="editSiswa('${x.id}')">✏️</button> <button class="btn-sm btn-danger" onclick="delSiswa('${x.id}')">❌</button></td></tr>`;
+        });
+        document.getElementById('list-siswa').innerHTML = hSiswa + "</table>";
+        db_siswa.forEach(x => optSiswa += `<option value="${x.id}">${x.id} - ${x.nama} (${x.kelas})</option>`);
+        document.getElementById('p-siswa-sel').innerHTML = optSiswa;
+
+        // Render Guru
+        let cGuru = document.getElementById('cari-guru') ? document.getElementById('cari-guru').value.toLowerCase() : "";
+        let hGuru = "<table>";
+        db_guru.filter(x => x.nama.toLowerCase().includes(cGuru) || x.id.toLowerCase().includes(cGuru)).forEach(x => {
+            hGuru += `<tr><td><b>${x.nama}</b><br><span style="color:#64748b; font-size:10px;">${x.id} | ${x.mapel}</span></td><td align="right" style="white-space:nowrap;"><button class="btn-sm btn-warn" onclick="editGuru('${x.id}')">✏️</button> <button class="btn-sm btn-danger" onclick="delGuru('${x.id}')">❌</button></td></tr>`;
+        });
+        document.getElementById('list-guru').innerHTML = hGuru + "</table>";
+
+        // Render History SPP
+        let hSpp = "<table><tr><th>BLN</th><th>SISWA</th><th>NOMINAL</th><th>OPSI</th></tr>";
+        db_spp.slice(-20).reverse().forEach(x => {
+            let s = db_siswa.find(y => y.id === x.id);
+            hSpp += `<tr><td>${x.bulan.slice(5,7)}/${x.bulan.slice(2,4)}</td><td><b>${s?s.nama:'?'}</b><br><small>${x.tgl_bayar.slice(8,10)}/${x.tgl_bayar.slice(5,7)}</small></td><td>Rp ${(x.nominal/1000)}k</td><td style="white-space:nowrap;"><button class="btn-sm btn-main" onclick="cetakKuitansi('${x.no_kuitansi}')">🖨️</button> <button class="btn-sm btn-danger" onclick="hapusSPP('${x.no_kuitansi}')">🗑️</button></td></tr>`;
+        });
+        document.getElementById('list-spp').innerHTML = hSpp + "</table>";
+
+        // Hanya jalankan jika isi select masih kosong untuk hindari reset saat ketik
+        if(document.getElementById('a-sel').innerHTML === "") {
+            renderSelectAbsen();
+        }
+    }
+
+    function buka(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById('p-'+id).classList.add('active'); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); event.currentTarget.classList.add('active'); window.scrollTo(0,0);}
+    
+    render();
+    renderSelectAbsen();
+</script>
+</body>
+</html>
